@@ -22,6 +22,9 @@ import { BootstrapIconsPlugin } from 'bootstrap-icons-vue';
 import BlackDashboard from "./plugins/blackDashboard";
 import i18n from "./i18n"
 import './registerServiceWorker'
+import axios from 'axios';
+
+Vue.prototype.$http = axios;
 Vue.use(BlackDashboard);
 Vue.use(VueRouter);
 Vue.use(RouterPrefetch);

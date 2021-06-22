@@ -14,7 +14,7 @@
         <card type="chart">
           <template slot="header">
             <h5 class="card-category">{{$t('Current Game Player Count')}}</h5>
-            <h3 class="card-title"><i class="tim-icons icon-user-run text-info "></i>{{this.currentGamePot}}</h3>
+            <h3 class="card-title"><i class="tim-icons icon-user-run text-info "></i>{{this.currentGamePlayerCount}}</h3>
           </template>
         </card>
       </div>
@@ -125,8 +125,8 @@
           data: []
         },
         table2: {
-          title: "Winner Showcase",
-          columns: ["Account", "Payout", "Game"],
+          title: "Winner Showcase (Last Game)",
+          columns: ["Account"],
           data: []
         },
         bigLineChart: {
@@ -159,9 +159,27 @@
       },
       getCurrentGamePot(){
         this.currentGamePot = 762
+
+        const headers = { "Content-Type": "application/json", 'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*'};
+        const baseURI = 'http://174.138.46.1:3000/api/current/pot';
+        let a = this.$http.get(baseURI, {headers}).then(res => {
+          this.currentGamePot = res.data
+        }).catch(err => {
+          console.log(err.response);
+        });
       },
       getCurrentGamePlayerCount(){
         this.currentGamePlayerCount = 20
+
+        const headers = { "Content-Type": "application/json", 'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*'};
+        const baseURI = 'http://174.138.46.1:3000/api/current/players';
+        let a = this.$http.get(baseURI, {headers}).then(res => {
+          this.currentGamePlayerCount = res.data.length
+        }).catch(err => {
+          console.log(err.response);
+        });
       },
       getNextGameStartTime(){
         this.nextGameStartTime = "JUN 17, 2021 11:50 UTC"
@@ -192,23 +210,19 @@
         ]
       },
       getPastWinners(){
-        this.table2.data = [
-          {
-            game: "123",
-            payout: "100 BANANO",
-            account: "ban_1wru4a1tpkeh4tquoowr"
-          },
-          {
-            game: "321",
-            payout: "70 BANANO",
-            account: "ban_1wru4a1tpkeh4tquoowr"
-          },
-          {
-            game: "456",
-            payout: "90 BANANO",
-            account: "ban_1wru4a1tpkeh4tquoowr"
-          }
-        ]
+        const headers = { "Content-Type": "application/json", 'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Headers': '*'};
+        const baseURI = 'http://174.138.46.1:3000/api/last/winners';
+        let a = this.$http.get(baseURI, {headers}).then(res => {
+          let modData = []
+          res.data.forEach(b => {
+            modData << {account: b}
+          })
+          this.table2.data = modData
+        }).catch(err => {
+          console.log(err.response);
+        });
+
       },
       getChartData(){
         // Get data for Payouts per game
